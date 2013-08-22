@@ -2,6 +2,7 @@
 //
 //Copyright (c) 2006-2010  Karl W. Pfalzer
 //Copyright (c) 2011-      George P. Burdell
+//Copyright (c) 2013       Karel Heyse
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +21,124 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
-header {
-}
+
+grammar Vhdl;
 
 options {
-  	language="Java";
+  	language = Java;
+  	k = 2;
+//	caseSensitive=false;
 }
 
-//{BEGIN parser
-//
-class VhdlParser extends Parser;
 
-options {
-  	k=2;
-  	//buildAST=true;
+tokens {
+	K_ABS = 'abs' ;
+	K_ACCESS = 'access' ;
+	K_AFTER = 'after' ;
+	K_ALIAS = 'alias' ;
+	K_ALL = 'all' ;
+	K_AND = 'and' ;
+	K_ARCHITECTURE = 'architecture' ;
+	K_ARRAY = 'array' ;
+	K_ASSERT = 'assert' ;
+	K_ATTRIBUTE = 'attribute' ;
+	K_BEGIN = 'begin' ;
+	K_BLOCK = 'block' ;
+	K_BODY = 'body' ;
+	K_BUFFER = 'buffer' ;
+	K_BUS = 'bus' ;
+	K_CASE = 'case' ;
+	K_COMPONENT = 'component' ;
+	K_CONFIGURATION  = 'configuration'  ;
+	K_CONSTANT  = 'constant'  ;
+	K_DISCONNECT = 'disconnect' ;
+	K_DOWNTO = 'downto' ;
+	K_ELSE = 'else' ;
+	K_ELSIF = 'elsif' ;
+	K_END = 'end' ;
+	K_ENTITY = 'entity' ;
+	K_EXIT = 'exit' ;
+	K_FILE = 'file' ;
+	K_FOR = 'for' ;
+	K_FUNCTION = 'function' ;
+	K_GENERATE = 'generate' ;
+	K_GENERIC = 'generic' ;
+	K_GROUP = 'group' ;
+	K_GUARDED = 'guarded' ;
+	K_IF = 'if' ;
+	K_IMPURE = 'impure' ;
+	K_IN = 'in' ;
+	K_INERTIAL = 'inertial' ;
+	K_INOUT = 'inout' ;
+	K_IS = 'is' ;
+	K_LABEL = 'label' ;
+	K_LIBRARY = 'library' ;
+	K_LINKAGE = 'linkage' ;
+	K_LITERAL = 'literal' ;
+	K_LOOP = 'loop' ;
+	K_MAP = 'map' ;
+	K_MOD  = 'mod'  ;
+	K_NAND = 'nand' ;
+	K_NEW  = 'new'  ;
+	K_NEXT = 'next' ;
+	K_NOR = 'nor' ;
+	K_NOT = 'not' ;
+	K_NULL = 'null' ;
+	K_OF  = 'of'  ;
+	K_ON = 'on' ;
+	K_OPEN = 'open' ;
+	K_OR = 'or' ;
+	K_OTHERS  = 'others'  ;
+	K_OUT = 'out' ;
+	K_PACKAGE  = 'package'  ;
+	K_PORT = 'port' ;
+	K_POSTPONED = 'postponed' ;
+	K_PROCEDURE  = 'procedure'  ;
+	K_PROCESS = 'process' ;
+	K_PROTECTED = 'protected' ;
+	K_PURE = 'pure' ;
+	K_RANGE = 'range' ;
+	K_RECORD = 'record' ;
+	K_REGISTER  = 'register'  ;
+	K_REJECT = 'reject' ;
+	K_REM = 'rem' ;
+	K_REPORT = 'report' ;
+	K_RETURN = 'return' ;
+	K_ROL = 'rol' ;
+	K_ROR = 'ror' ;
+	K_SELECT = 'select' ;
+	K_SEVERITY = 'severity' ;
+	K_SHARED = 'shared' ;
+	K_SIGNAL = 'signal' ;
+	K_SLA = 'sla' ;
+	K_SLL = 'sll' ;
+	K_SRA = 'sra' ;
+	K_SRL = 'srl' ;
+	K_SUBTYPE = 'subtype' ;
+	K_THEN = 'then' ;
+	K_TO  = 'to'  ;
+	K_TRANSPORT = 'transport' ;
+	K_TYPE = 'type' ;
+	K_UNAFFECTED = 'unaffected' ;
+	K_UNITS  = 'units'  ;
+	K_UNTIL = 'until' ;
+	K_USE = 'use' ;
+	K_VARIABLE = 'variable' ;
+	K_WAIT = 'wait' ;
+	K_WHEN = 'when' ;
+	K_WHILE = 'while' ;
+	K_WITH = 'with' ;
+	K_XNOR = 'xnor' ;
+	K_XOR = 'xor' ;
 }
 
-{
+@lexer::header {
+}
+
+@header {
+}
+
+@members {
 }
 
 abstract_literal
@@ -247,7 +349,7 @@ component_declaration
 ;
 
 component_instantiation_statement
-:   label COLON instantiated_unit 
+:   instNm=label COLON refNm=instantiated_unit 
 		(generic_map_aspect)? (port_map_aspect)? SEMI
 ;
 
@@ -639,8 +741,8 @@ guarded_signal_specification
 ;
 
 identifier
-:   BASIC_IDENTIFIER   
-|	EXTENDED_IDENTIFIER
+:   (BASIC_IDENTIFIER 
+    |EXTENDED_IDENTIFIER)
 ;
 
 identifier_list
@@ -672,9 +774,9 @@ index_subtype_definition
 ;
 
 instantiated_unit
-:   (K_COMPONENT)? name
+:   ((K_COMPONENT)? name
 |   K_ENTITY name (LPAREN identifier RPAREN)? 
-|   K_CONFIGURATION name
+|   K_CONFIGURATION name)
 ;
 
 instantiation_list
@@ -806,7 +908,7 @@ name
     |   operator_symbol
     )
     ( options {greedy=true;}:
-        (   DOT suffix 
+        (   DOT suffix
         |   TIC aggregate
         |   (signature)? tic_attribute_designator
         |   (LPAREN expression (COMMA expression)* RPAREN)=>
@@ -927,8 +1029,8 @@ port_map_aspect
 ;
     
 primary
-:	(function_call)=> function_call
-|   (name (signature)? tic_attribute_designator)=>
+:	//(function_call)=> function_call  |
+   (name (signature)? tic_attribute_designator)=>
         name (signature)? tic_attribute_designator	//attribute_name
 |	(name TIC)=> qualified_expression
 |	(LPAREN expression RPAREN)=> LPAREN expression RPAREN
@@ -1298,122 +1400,12 @@ waveform_element
 voptions
 :   (K_GUARDED)? (delay_mechanism)?
 ;
-//
-//}END parser
 
-//=====================================================================
-class VhdlLexer extends Lexer;
-options {
-	k=2;
-	charVocabulary='\u0003'..'\u00FF';
 
-	//VHDL is case-insensitive
-	//
-	caseSensitive=false;
-	caseSensitiveLiterals=false;
-	testLiterals=true;
-}
 
-tokens {
-	K_ABS = "abs" ;
-	K_ACCESS = "access" ;
-	K_AFTER = "after" ;
-	K_ALIAS = "alias" ;
-	K_ALL = "all" ;
-	K_AND = "and" ;
-	K_ARCHITECTURE = "architecture" ;
-	K_ARRAY = "array" ;
-	K_ASSERT = "assert" ;
-	K_ATTRIBUTE = "attribute" ;
-	K_BEGIN = "begin" ;
-	K_BLOCK = "block" ;
-	K_BODY = "body" ;
-	K_BUFFER = "buffer" ;
-	K_BUS = "bus" ;
-	K_CASE = "case" ;
-	K_COMPONENT = "component" ;
-	K_CONFIGURATION  = "configuration"  ;
-	K_CONSTANT  = "constant"  ;
-	K_DISCONNECT = "disconnect" ;
-	K_DOWNTO = "downto" ;
-	K_ELSE = "else" ;
-	K_ELSIF = "elsif" ;
-	K_END = "end" ;
-	K_ENTITY = "entity" ;
-	K_EXIT = "exit" ;
-	K_FILE = "file" ;
-	K_FOR = "for" ;
-	K_FUNCTION = "function" ;
-	K_GENERATE = "generate" ;
-	K_GENERIC = "generic" ;
-	K_GROUP = "group" ;
-	K_GUARDED = "guarded" ;
-	K_IF = "if" ;
-	K_IMPURE = "impure" ;
-	K_IN = "in" ;
-	K_INERTIAL = "inertial" ;
-	K_INOUT = "inout" ;
-	K_IS = "is" ;
-	K_LABEL = "label" ;
-	K_LIBRARY = "library" ;
-	K_LINKAGE = "linkage" ;
-	K_LITERAL = "literal" ;
-	K_LOOP = "loop" ;
-	K_MAP = "map" ;
-	K_MOD  = "mod"  ;
-	K_NAND = "nand" ;
-	K_NEW  = "new"  ;
-	K_NEXT = "next" ;
-	K_NOR = "nor" ;
-	K_NOT = "not" ;
-	K_NULL = "null" ;
-	K_OF  = "of"  ;
-	K_ON = "on" ;
-	K_OPEN = "open" ;
-	K_OR = "or" ;
-	K_OTHERS  = "others"  ;
-	K_OUT = "out" ;
-	K_PACKAGE  = "package"  ;
-	K_PORT = "port" ;
-	K_POSTPONED = "postponed" ;
-	K_PROCEDURE  = "procedure"  ;
-	K_PROCESS = "process" ;
-	K_PROTECTED = "protected" ;
-	K_PURE = "pure" ;
-	K_RANGE = "range" ;
-	K_RECORD = "record" ;
-	K_REGISTER  = "register"  ;
-	K_REJECT = "reject" ;
-	K_REM = "rem" ;
-	K_REPORT = "report" ;
-	K_RETURN = "return" ;
-	K_ROL = "rol" ;
-	K_ROR = "ror" ;
-	K_SELECT = "select" ;
-	K_SEVERITY = "severity" ;
-	K_SHARED = "shared" ;
-	K_SIGNAL = "signal" ;
-	K_SLA = "sla" ;
-	K_SLL = "sll" ;
-	K_SRA = "sra" ;
-	K_SRL = "srl" ;
-	K_SUBTYPE = "subtype" ;
-	K_THEN = "then" ;
-	K_TO  = "to"  ;
-	K_TRANSPORT = "transport" ;
-	K_TYPE = "type" ;
-	K_UNAFFECTED = "unaffected" ;
-	K_UNITS  = "units"  ;
-	K_UNTIL = "until" ;
-	K_USE = "use" ;
-	K_VARIABLE = "variable" ;
-	K_WAIT = "wait" ;
-	K_WHEN = "when" ;
-	K_WHILE = "while" ;
-	K_WITH = "with" ;
-	K_XNOR = "xnor" ;
-	K_XOR = "xor" ;
-}
+//LEXER
+
+
 
 LPAREN:	'(' ;
 RPAREN: ')' ;
@@ -1422,22 +1414,22 @@ POUND:  '#' ;
 AND:    '&' ;
 
 STAR:   '*' ;
-STAR2:  "**";
+STAR2:  '**';
 PLUS:   '+' ;
 COMMA:  ',' ;
 MINUS:	'-' ;
 DOT:	'.' ;
 SLASH:  '/' ;
-SLASHEQ:"/=";
+SLASHEQ:'/=';
 COLON:	':' ;
 SEMI:	';' ;
 LST:	'<' ;
-LSTEQ:	"<=";
-LSTGRT:	"<>";
+LSTEQ:	'<=';
+LSTGRT:	'<>';
 EQ:		'=' ;
 GRT:	'>' ;
-GRTEQ:	">=";
-EQGRT:	"=>";
+GRTEQ:	'>=';
+EQGRT:	'=>';
 LBRACK:	'[' ;
 RBRACK:	']'	;
 USCORE:	'_'	;
@@ -1453,22 +1445,22 @@ BTIC:	'`'	;
 LCURLY:	'{'	;
 RCURLY:	'}'	;
 TILDE:	'~' ;
-COLONEQ:":=";
+COLONEQ:':=';
 
 WS
-:	(' '|'\r'|'\t')+	{$setType(Token.SKIP);}
+:	(' '|'\r'|'\t')+	{$channel=HIDDEN;}
 ;
 
 NEWLINE
-:	'\n' {$setType(Token.SKIP); newline();}
+:	'\n' {$channel=HIDDEN;}
 ;
 
 COMMENT
-: "--" (~'\n')* 	{$setType(Token.SKIP);}
+: '--' (~'\n')* 	{$channel=HIDDEN;}
 ;
 
 BASIC_IDENTIFIER
-options {testLiterals=false;}
+//options {testLiterals=false;}
 :   LETTER (('_')? (LETTER | DIGIT))*
 ;
 
@@ -1477,57 +1469,48 @@ BIT_STRING_LITERAL
 ;
 
 //To distinguish between single quoted and attribute prefix (i.e., 'event)
-protected
 TIC: '\''
 ;
 
 //Need ident in 'ident to return single token so ident part is never a keyword.
 //For example 'RANGE will otherwise return TIC and K_RANGE which is not correct.
-protected
 TIC_SIMPLE_NAME
 :   TIC (BASIC_IDENTIFIER |	TIC EXTENDED_IDENTIFIER)
 ;
 
 CHARACTER_LITERAL
-:   ("'" (GRAPHIC_CHARACTER)? "'")=> "'" (GRAPHIC_CHARACTER)? "'"
-|	(TIC_SIMPLE_NAME)=> TIC_SIMPLE_NAME {$setType(TIC_SIMPLE_NAME);}
-|	TIC	{$setType(TIC);}	
+:   ('\'' (GRAPHIC_CHARACTER)? '\'')=> '\'' (GRAPHIC_CHARACTER)? '\''
+|	(TIC_SIMPLE_NAME)=> TIC_SIMPLE_NAME {$type = TIC_SIMPLE_NAME;}
+|	TIC	{$type = TIC;}	
 ;
 
 EXTENDED_IDENTIFIER
-:   "\\" (GRAPHIC_CHARACTER)* "\\"
+:   '\\' (GRAPHIC_CHARACTER)* '\\'
 ;
 
 STRING_LITERAL
-:   '"' (GRAPHIC_CHARACTER_BASE | "\"\"")* '"'
+:   '"' (GRAPHIC_CHARACTER_BASE | '""')* '"'
 ;
 
-BASED_OR_DECIMAL
-:	(INTEGER '#')=> BASED_LITERAL	{$setType(BASED_LITERAL);}
-|	DECIMAL_LITERAL					{$setType(DECIMAL_LITERAL);}
-;
-
-protected
 DECIMAL_LITERAL
-:   INTEGER ('.' INTEGER)? (EXPONENT)?
+:   INTEGER ('.' INTEGER)? (EXPONENT)?  {$type = DECIMAL_LITERAL;}
 ;
 
-protected
 BASED_LITERAL
-:   INTEGER '#' BASED_INTEGER ('.' BASED_INTEGER)? '#' (EXPONENT)?
+:   INTEGER '#' BASED_INTEGER ('.' BASED_INTEGER)? '#' (EXPONENT)?  {$type = BASED_LITERAL;}
 ;
 
-protected
+fragment
 BASE_SPECIFIER
 :   'b' | 'o' | 'x'
 ;
 
-protected
+fragment
 BASED_INTEGER
 :   EXTENDED_DIGIT (('_')? EXTENDED_DIGIT)*
 ;
 
-protected
+fragment
 EXTENDED_DIGIT
 :   DIGIT
 |   LETTER
@@ -1535,7 +1518,7 @@ EXTENDED_DIGIT
 
 //Note: Character set codes from: http://htmlhelp.com/reference/charset
 //      " is added in GRAPHIC_CHARACTER
-protected
+fragment
 BASIC_GRAPHIC_CHARACTER_BASE
 :   '\u00C0'..'\u00DE' //code: 192-222
 |   DIGIT
@@ -1544,7 +1527,7 @@ BASIC_GRAPHIC_CHARACTER_BASE
 |   ' ' | '\u00A0' //NBSP
 ;
 
-protected
+fragment
 GRAPHIC_CHARACTER_BASE
 :   BASIC_GRAPHIC_CHARACTER_BASE
 |   LOWER_CASE_LETTER
@@ -1553,39 +1536,38 @@ GRAPHIC_CHARACTER_BASE
 |   '\u00A1'..'\u00BF'  //code: 161-191
 ;
 
-protected
+fragment
 GRAPHIC_CHARACTER
 :	GRAPHIC_CHARACTER_BASE
 |	'"'
 ;
 
-protected
+fragment
 BIT_VALUE
 :   BASED_INTEGER
 ;
 
-protected
+fragment
 DIGIT
 :   '0'..'9'
 ;
 
-protected
+fragment
 EXPONENT
 :   'e' (('+')? | '-') INTEGER
 ;
 
-protected 
+fragment 
 LOWER_CASE_LETTER
 :   'a'..'z' 
 ;
 
-protected 
+fragment 
 LETTER
 :   LOWER_CASE_LETTER 
 ;
 
-protected
+fragment
 INTEGER
 :   DIGIT (('_')? DIGIT)*
 ;
-

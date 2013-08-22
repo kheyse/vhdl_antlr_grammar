@@ -1,15 +1,15 @@
-.PHONY : all run
+.PHONY : all run clean
 
 all : Main.class
 
-VhdlLexer.java VhdlParser.java : vhdl.g
-	java -cp antlr-2.7.7.jar antlr.Tool $<
+VhdlLexer.java VhdlParser.java : Vhdl.g
+	java -cp antlr-3.5-complete.jar org.antlr.Tool $<
 
-Main.class : Main.java VhdlLexer.java VhdlParser.java
-	javac -cp .:antlr-2.7.7.jar $<
+Main.class : Main.java VhdlLexer.java VhdlParser.java ANTLRNoCaseFileStream.java
+	javac -cp .:antlr-3.5-complete.jar $<
 
 clean :
 	rm -f *.class VhdlLexer.java VhdlParser.java
 
 run : all
-	java -cp .:antlr-2.7.7.jar Main adder.vhdl
+	java -cp .:antlr-3.5-complete.jar Main adder.vhdl

@@ -1,17 +1,14 @@
-import antlr.*;
-import java.io.FileReader;
+import org.antlr.runtime.*;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
         String fname = args[0];
-        FileReader rdr = new FileReader(fname);
+        ANTLRFileStream in = new ANTLRNoCaseFileStream(fname);
         
-        VhdlLexer m_lexer = new VhdlLexer(rdr);
-        m_lexer.setFilename(fname);
-        VhdlParser m_parser = new VhdlParser(m_lexer);
-        m_parser.setFilename(fname);
-        m_parser.design_file();
-        rdr.close();
+        VhdlLexer lexer = new VhdlLexer(in);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        VhdlParser parser = new VhdlParser(tokens);
+        parser.design_file();
     }
 }
