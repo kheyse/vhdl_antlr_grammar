@@ -21,12 +21,10 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
 header {
-package parser.vhdl;
 }
 
 options {
   	language="Java";
-  	//language="Cpp";
 }
 
 //{BEGIN parser
@@ -39,21 +37,6 @@ options {
 }
 
 {
-	/**
-	 *	Track module declarations and instances.
-	 */
-	public static Tracker	stTracker = new Tracker();
-
-	/**
-	 *	A convenience for building Token
-	 */
-	private static class BldToken extends antlr.CommonToken {
-		private BldToken(Token orig, String news) {
-			super(orig.getType(), news);
-			setFilename(orig.getFilename());
-			setLine(orig.getLine());
-		}
-	}
 }
 
 abstract_literal
@@ -264,9 +247,7 @@ component_declaration
 ;
 
 component_instantiation_statement
-{ Token instNm = null, refNm = null;}
-:   instNm=label COLON refNm=instantiated_unit 
-			{stTracker.addInstance(refNm, instNm);}
+:   label COLON instantiated_unit 
 		(generic_map_aspect)? (port_map_aspect)? SEMI
 ;
 
@@ -480,8 +461,7 @@ entity_class_entry_list
 ;
 
 entity_declaration
-{ Token id = null;}
-:   K_ENTITY id=identifier {stTracker.addModule(id);}
+:   K_ENTITY identifier
 		K_IS entity_header entity_declarative_part
         (K_BEGIN entity_statement_part)?
         K_END (K_ENTITY)? (simple_name)? SEMI
@@ -658,10 +638,9 @@ guarded_signal_specification
 :   signal_list COLON name
 ;
 
-identifier returns [Token tok]
-{ tok=null;}
-:   id:BASIC_IDENTIFIER 	{tok=id;}   
-|	id2:EXTENDED_IDENTIFIER	{tok=id2;}
+identifier
+:   BASIC_IDENTIFIER   
+|	EXTENDED_IDENTIFIER
 ;
 
 identifier_list
@@ -692,10 +671,9 @@ index_subtype_definition
 :   name K_RANGE LSTGRT
 ;
 
-instantiated_unit returns [Token tok]
-{tok=null;}
-:   (K_COMPONENT)? tok=name
-|   K_ENTITY tok=name (LPAREN identifier RPAREN)? 
+instantiated_unit
+:   (K_COMPONENT)? name
+|   K_ENTITY name (LPAREN identifier RPAREN)? 
 |   K_CONFIGURATION name
 ;
 
@@ -744,9 +722,8 @@ iteration_scheme
 |   K_FOR parameter_specification
 ;
 
-label returns [Token tok]
-{tok=null;}
-:   tok=identifier
+label
+:   identifier
 ;
 
 label_colon
@@ -824,20 +801,12 @@ multiplying_operator
 //|   attribute_name
 //;
 //
-name returns [Token tok]
-{ 	StringBuilder smplName = null;
-	Token first = null;
-	tok = null;
-}
-:   (   tok=simple_name	{smplName = new StringBuilder(tok.getText()); first=tok;}
+name
+:   (   simple_name
     |   operator_symbol
     )
     ( options {greedy=true;}:
-        (   DOT tok=suffix 
-				{	if ((tok != null) && (null != smplName)) {
-						smplName.append('.').append(tok.getText());
-					}
-				}
+        (   DOT suffix 
         |   TIC aggregate
         |   (signature)? tic_attribute_designator
         |   (LPAREN expression (COMMA expression)* RPAREN)=>
@@ -846,11 +815,6 @@ name returns [Token tok]
         |   LPAREN discrete_range RPAREN
         )
     )*
-	{
-		if (null != first) {
-			tok = new BldToken(first, smplName.toString());
-		}
-	}
 ;
 
 next_statement
@@ -1203,9 +1167,8 @@ simple_expression
 :   (sign)? term (options{greedy=true;}: adding_operator term)*
 ;
 
-simple_name returns [Token tok]
-{tok=null;}
-:   tok=identifier
+simple_name
+:   identifier
 ;
 
 string_literal
@@ -1265,9 +1228,8 @@ subtype_indication
 :   name (name)? (constraint)?
 ;
 
-suffix returns [Token tok]
-{tok=null;}
-:   tok=simple_name
+suffix
+:   simple_name
 |   character_literal
 |   operator_symbol 
 |   K_ALL

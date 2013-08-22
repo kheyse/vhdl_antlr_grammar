@@ -1,3 +1,5 @@
-This is an antlr2 grammar for VHDL parsing.
+This is an ANTLR2 grammar for VHDL parsing.
 
-This version is copied from https://github.com/gburdell/parser which is derived from http://sourceforge.net/projects/v2kparse/.
+This version is derived from https://github.com/gburdell/parser which is derived from http://sourceforge.net/projects/v2kparse/.
+
+Tested with ANTLR 2.7.7
