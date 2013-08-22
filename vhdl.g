@@ -26,113 +26,10 @@ grammar Vhdl;
 
 options {
   	language = Java;
-  	k = 2;
-//	caseSensitive=false;
 }
 
 
 tokens {
-	K_ABS = 'abs' ;
-	K_ACCESS = 'access' ;
-	K_AFTER = 'after' ;
-	K_ALIAS = 'alias' ;
-	K_ALL = 'all' ;
-	K_AND = 'and' ;
-	K_ARCHITECTURE = 'architecture' ;
-	K_ARRAY = 'array' ;
-	K_ASSERT = 'assert' ;
-	K_ATTRIBUTE = 'attribute' ;
-	K_BEGIN = 'begin' ;
-	K_BLOCK = 'block' ;
-	K_BODY = 'body' ;
-	K_BUFFER = 'buffer' ;
-	K_BUS = 'bus' ;
-	K_CASE = 'case' ;
-	K_COMPONENT = 'component' ;
-	K_CONFIGURATION  = 'configuration'  ;
-	K_CONSTANT  = 'constant'  ;
-	K_DISCONNECT = 'disconnect' ;
-	K_DOWNTO = 'downto' ;
-	K_ELSE = 'else' ;
-	K_ELSIF = 'elsif' ;
-	K_END = 'end' ;
-	K_ENTITY = 'entity' ;
-	K_EXIT = 'exit' ;
-	K_FILE = 'file' ;
-	K_FOR = 'for' ;
-	K_FUNCTION = 'function' ;
-	K_GENERATE = 'generate' ;
-	K_GENERIC = 'generic' ;
-	K_GROUP = 'group' ;
-	K_GUARDED = 'guarded' ;
-	K_IF = 'if' ;
-	K_IMPURE = 'impure' ;
-	K_IN = 'in' ;
-	K_INERTIAL = 'inertial' ;
-	K_INOUT = 'inout' ;
-	K_IS = 'is' ;
-	K_LABEL = 'label' ;
-	K_LIBRARY = 'library' ;
-	K_LINKAGE = 'linkage' ;
-	K_LITERAL = 'literal' ;
-	K_LOOP = 'loop' ;
-	K_MAP = 'map' ;
-	K_MOD  = 'mod'  ;
-	K_NAND = 'nand' ;
-	K_NEW  = 'new'  ;
-	K_NEXT = 'next' ;
-	K_NOR = 'nor' ;
-	K_NOT = 'not' ;
-	K_NULL = 'null' ;
-	K_OF  = 'of'  ;
-	K_ON = 'on' ;
-	K_OPEN = 'open' ;
-	K_OR = 'or' ;
-	K_OTHERS  = 'others'  ;
-	K_OUT = 'out' ;
-	K_PACKAGE  = 'package'  ;
-	K_PORT = 'port' ;
-	K_POSTPONED = 'postponed' ;
-	K_PROCEDURE  = 'procedure'  ;
-	K_PROCESS = 'process' ;
-	K_PROTECTED = 'protected' ;
-	K_PURE = 'pure' ;
-	K_RANGE = 'range' ;
-	K_RECORD = 'record' ;
-	K_REGISTER  = 'register'  ;
-	K_REJECT = 'reject' ;
-	K_REM = 'rem' ;
-	K_REPORT = 'report' ;
-	K_RETURN = 'return' ;
-	K_ROL = 'rol' ;
-	K_ROR = 'ror' ;
-	K_SELECT = 'select' ;
-	K_SEVERITY = 'severity' ;
-	K_SHARED = 'shared' ;
-	K_SIGNAL = 'signal' ;
-	K_SLA = 'sla' ;
-	K_SLL = 'sll' ;
-	K_SRA = 'sra' ;
-	K_SRL = 'srl' ;
-	K_SUBTYPE = 'subtype' ;
-	K_THEN = 'then' ;
-	K_TO  = 'to'  ;
-	K_TRANSPORT = 'transport' ;
-	K_TYPE = 'type' ;
-	K_UNAFFECTED = 'unaffected' ;
-	K_UNITS  = 'units'  ;
-	K_UNTIL = 'until' ;
-	K_USE = 'use' ;
-	K_VARIABLE = 'variable' ;
-	K_WAIT = 'wait' ;
-	K_WHEN = 'when' ;
-	K_WHILE = 'while' ;
-	K_WITH = 'with' ;
-	K_XNOR = 'xnor' ;
-	K_XOR = 'xor' ;
-}
-
-@lexer::header {
 }
 
 @header {
@@ -160,7 +57,7 @@ actual_parameter_part
 ;
 
 actual_part
-:   (name LPAREN)=> name LPAREN actual_designator RPAREN
+:   name LPAREN actual_designator RPAREN
 |   actual_designator
 ;
 
@@ -187,7 +84,7 @@ alias_designator
 
 allocator
 :   K_NEW 
-        (   (subtype_indication)=> subtype_indication
+        (   subtype_indication
         |   qualified_expression
         )
 ;
@@ -208,7 +105,7 @@ architecture_statement_part
 ;
 
 array_type_definition
-:   (unconstrained_array_definition)=> unconstrained_array_definition
+:   unconstrained_array_definition
 |   constrained_array_definition
 ;
 
@@ -223,7 +120,7 @@ assertion_statement
 ;
 
 association_element
-:   ((formal_part EQGRT)=> formal_part EQGRT)? actual_part
+:   (formal_part EQGRT)? actual_part
 ;
 
 association_list
@@ -269,7 +166,7 @@ block_configuration
 ;
 
 block_declarative_item
-:   (subprogram_declaration)=> subprogram_declaration
+:   subprogram_declaration
 |   subprogram_body
 |   type_declaration
 |   subtype_declaration
@@ -279,12 +176,12 @@ block_declarative_item
 |   file_declaration
 |   alias_declaration
 |   component_declaration
-|   (attribute_specification)=> attribute_specification
+|   attribute_specification
 |   attribute_declaration
 |   configuration_specification
 |   disconnection_specification
 |   use_clause
-|   (K_GROUP identifier COLON)=> group_declaration
+|   group_declaration
 |   group_template_declaration
 ;
 
@@ -298,7 +195,7 @@ block_header
 ;
 
 block_specification
-:   (label LPAREN)=> label LPAREN index_specification RPAREN
+:   label LPAREN index_specification RPAREN
 |   name
 ;
 
@@ -327,8 +224,8 @@ character_literal
 ;
 
 choice
-:   (simple_expression)=> simple_expression
-|   (simple_name)=> simple_name
+:   simple_expression
+|   simple_name
 |   discrete_range
 |   K_OTHERS
 ;
@@ -367,13 +264,12 @@ concurrent_assertion_statement
 ;
 
 concurrent_procedure_call_statement
-:   (label_colon)=> label_colon (K_POSTPONED)? procedure_call SEMI
+:   label_colon (K_POSTPONED)? procedure_call SEMI
 |   (K_POSTPONED)? procedure_call SEMI
 ;
 
 concurrent_signal_assignment_statement
-:   (label_colon)=> 
-		label_colon (K_POSTPONED)? concurrent_signal_assignment_statement_2
+:   label_colon (K_POSTPONED)? concurrent_signal_assignment_statement_2
 |   (K_POSTPONED)? concurrent_signal_assignment_statement_2
 ;
 
@@ -383,15 +279,12 @@ concurrent_signal_assignment_statement_2
 ;
 
 concurrent_statement
-:   (block_statement)=> block_statement
-|   (process_statement)=> process_statement
-|   (concurrent_procedure_call_statement)=> 
-		concurrent_procedure_call_statement
-|   (concurrent_assertion_statement)=> concurrent_assertion_statement
-|   (concurrent_signal_assignment_statement)=>
-		concurrent_signal_assignment_statement
-|   (component_instantiation_statement)=>
-		component_instantiation_statement
+:   block_statement
+|   process_statement
+|   concurrent_procedure_call_statement
+|   concurrent_assertion_statement
+|   concurrent_signal_assignment_statement
+|   component_instantiation_statement
 |   generate_statement
 ;
 
@@ -410,13 +303,13 @@ conditional_signal_assignment
 ;
 
 conditional_waveforms
-:	waveform ((K_WHEN condition K_ELSE)=> conditional_waveforms_2)?
+:	waveform (conditional_waveforms_2)?
     	(K_WHEN condition)?
 ;
 
 conditional_waveforms_2
 :	K_WHEN condition K_ELSE waveform
-    	((K_WHEN condition K_ELSE)=> conditional_waveforms_2)?
+    	(conditional_waveforms_2)?
 ;
 
 configuration_declaration
@@ -436,7 +329,7 @@ configuration_declarative_part
 ;
 
 configuration_item
-:   (block_configuration)=> block_configuration
+:   block_configuration
 |   component_configuration
 ;
 
@@ -473,12 +366,12 @@ decimal_literal
 declaration
 :   type_declaration
 |   subtype_declaration 
-|   (object_declaration)=> object_declaration 
+|   object_declaration 
 |   interface_declaration 
 |   alias_declaration
 |   attribute_declaration 
 |   component_declaration 
-|   (K_GROUP identifier COLON)=> group_declaration
+|   group_declaration
 |   group_template_declaration
 |   entity_declaration 
 |   configuration_declaration 
@@ -514,12 +407,12 @@ disconnection_specification
 ;
 
 discrete_range
-:   (range)=> range
+:   range
 |   subtype_indication
 ;
 
 element_association
-:   ((choices EQGRT)=> choices EQGRT)? expression
+:   (choices EQGRT)? expression
 ;
 
 element_declaration
@@ -570,7 +463,7 @@ entity_declaration
 ;
 
 entity_declarative_item
-:   (subprogram_declaration)=> subprogram_declaration
+:   subprogram_declaration
 |   subprogram_body 
 |   type_declaration 
 |   subtype_declaration 
@@ -579,11 +472,11 @@ entity_declarative_item
 |   variable_declaration 
 |   file_declaration 
 |   alias_declaration 
-|   (attribute_specification)=> attribute_specification
+|   attribute_specification
 |   attribute_declaration
 |   disconnection_specification 
 |   use_clause 
-|   (K_GROUP identifier COLON)=> group_declaration
+|   group_declaration
 |   group_template_declaration
 ;
 
@@ -610,9 +503,8 @@ entity_specification
 ;
 
 entity_statement
-:   (concurrent_assertion_statement)=> concurrent_assertion_statement
-|   (concurrent_procedure_call_statement)=> 
-		concurrent_procedure_call_statement 
+:   concurrent_assertion_statement
+|   concurrent_procedure_call_statement 
 |   process_statement
 ;
 
@@ -653,7 +545,7 @@ logical_op
 ;
 
 factor
-:   primary (options{greedy=true;}: STAR2 primary)?
+:   primary (STAR2 primary)?
 |   K_ABS primary
 |   K_NOT primary
 ;
@@ -765,7 +657,7 @@ index_constraint
 ;
 
 index_specification
-:   (discrete_range)=> discrete_range
+:   discrete_range
 |   expression
 ;
 
@@ -791,8 +683,8 @@ interface_constant_declaration
 ;
 
 interface_declaration
-:   (interface_constant_declaration)=> interface_constant_declaration
-|   (interface_signal_declaration )=> interface_signal_declaration 
+:   interface_constant_declaration
+|   interface_signal_declaration 
 |   interface_variable_declaration 
 |   interface_file_declaration
 ;
@@ -810,12 +702,12 @@ interface_list
 ;
 
 interface_signal_declaration
-:   (K_SIGNAL)? identifier_list COLON (mode)? subtype_indication (K_BUS)? 
+:   (K_SIGNAL)? identifier_list COLON (vmode)? subtype_indication (K_BUS)? 
         (COLONEQ expression)?
 ;
 
 interface_variable_declaration
-:   (K_VARIABLE)? identifier_list COLON (mode)? subtype_indication
+:   (K_VARIABLE)? identifier_list COLON (vmode)? subtype_indication
         (COLONEQ expression)?
 ;
 
@@ -837,12 +729,12 @@ library_clause
 ;
 
 library_unit
-:   (K_ARCHITECTURE | K_PACKAGE K_BODY)=> secondary_unit
+:   secondary_unit
 |   primary_unit
 ;
 
 literal
-:   (numeric_literal)=> numeric_literal
+:   numeric_literal
 |   enumeration_literal 
 |   string_literal 
 |   bit_string_literal 
@@ -878,7 +770,7 @@ miscellaneous_operator
 |   K_NOT
 ;
 
-mode
+vmode
 :   K_IN
 |   K_OUT
 |   K_INOUT
@@ -907,13 +799,12 @@ name
 :   (   simple_name
     |   operator_symbol
     )
-    ( options {greedy=true;}:
+    (
         (   DOT suffix
         |   TIC aggregate
         |   (signature)? tic_attribute_designator
-        |   (LPAREN expression (COMMA expression)* RPAREN)=>
-        		LPAREN expression (COMMA expression)* RPAREN
-        |   (LPAREN actual_parameter_part RPAREN)=> LPAREN actual_parameter_part RPAREN
+        |   LPAREN expression (COMMA expression)* RPAREN
+        |   LPAREN actual_parameter_part RPAREN
         |   LPAREN discrete_range RPAREN
         )
     )*
@@ -928,7 +819,7 @@ null_statement
 ;
 
 numeric_literal
-:   (abstract_literal)=> abstract_literal
+:   abstract_literal
 |   physical_literal
 ;
 
@@ -958,7 +849,7 @@ package_body
 ;
 
 package_body_declarative_item
-:   (subprogram_declaration)=> subprogram_declaration
+:   subprogram_declaration
 |   subprogram_body 
 |   type_declaration 
 |   subtype_declaration 
@@ -967,7 +858,7 @@ package_body_declarative_item
 |   file_declaration 
 |   alias_declaration 
 |   use_clause 
-|   (K_GROUP identifier COLON)=> group_declaration
+|   group_declaration
 |   group_template_declaration
 ;
 
@@ -990,11 +881,11 @@ package_declarative_item
 |   file_declaration 
 |   alias_declaration 
 |   component_declaration 
-|   (attribute_specification)=> attribute_specification
+|   attribute_specification
 |   attribute_declaration
 |   disconnection_specification 
 |   use_clause 
-|   (K_GROUP identifier COLON)=> group_declaration
+|   group_declaration
 |   group_template_declaration
 ;
 
@@ -1029,11 +920,10 @@ port_map_aspect
 ;
     
 primary
-:	//(function_call)=> function_call  |
-   (name (signature)? tic_attribute_designator)=>
-        name (signature)? tic_attribute_designator	//attribute_name
-|	(name TIC)=> qualified_expression
-|	(LPAREN expression RPAREN)=> LPAREN expression RPAREN
+:	//function_call  |
+    name (signature)? tic_attribute_designator	//attribute_name
+|	qualified_expression
+|	LPAREN expression RPAREN
 |	literal
 |	allocator
 |	aggregate
@@ -1050,11 +940,11 @@ procedure_call
 ;
 
 procedure_call_statement
-:   (options{greedy=true;}: label_colon)? procedure_call SEMI
+:   (label_colon)? procedure_call SEMI
 ;
 
 process_declarative_item
-:   (subprogram_declaration)=> subprogram_declaration 
+:   subprogram_declaration 
 |   subprogram_body 
 |   type_declaration 
 |   subtype_declaration 
@@ -1062,10 +952,10 @@ process_declarative_item
 |   variable_declaration 
 |   file_declaration 
 |   alias_declaration 
-|   (attribute_specification)=> attribute_specification
+|   attribute_specification
 |   attribute_declaration
 |   use_clause 
-|   (K_GROUP identifier COLON)=> group_declaration
+|   group_declaration
 |   group_template_declaration
 ;
 
@@ -1089,7 +979,7 @@ protected_type_body
 ;
 
 protected_type_body_declarative_item
-:   (subprogram_declaration)=> subprogram_declaration 
+:   subprogram_declaration 
 |   subprogram_body 
 |   type_declaration 
 |   subtype_declaration 
@@ -1097,10 +987,10 @@ protected_type_body_declarative_item
 |   variable_declaration 
 |   file_declaration 
 |   alias_declaration 
-|   (attribute_specification)=> attribute_specification
+|   attribute_specification
 |   attribute_declaration
 |   use_clause 
-|   (K_GROUP identifier COLON)=> group_declaration
+|   group_declaration
 |   group_template_declaration
 ;
 
@@ -1130,14 +1020,13 @@ protected_type_definition
 
 qualified_expression
 :	name TIC
-	(	(aggregate)=> aggregate 
+	(	aggregate 
 	| 	LPAREN expression RPAREN 
 	)
 ;
 
 range
-:   (simple_expression direction simple_expression)=>
-		simple_expression direction simple_expression
+:   simple_expression direction simple_expression
 |   name
 ;
 
@@ -1173,7 +1062,7 @@ return_statement
 
 scalar_type_definition
 :   enumeration_type_definition 
-|   (range_constraint)=> range_constraint
+|   range_constraint
 |   physical_type_definition
 ;
 
@@ -1207,18 +1096,18 @@ sequence_of_statements
 ;
 
 sequential_statement
-:   ((label_colon)? K_WAIT)=> wait_statement 
-|   ((label_colon)? K_ASSERT)=> assertion_statement 
-|   ((label_colon)? K_REPORT)=> report_statement 
-|   ((label_colon)? K_IF)=> if_statement 
-|   ((label_colon)? K_CASE)=> case_statement 
-|   ((label_colon)? K_NEXT)=> next_statement 
-|   ((label_colon)? K_EXIT)=> exit_statement 
-|   ((label_colon)? K_RETURN)=> return_statement 
-|   ((label_colon)? K_NULL)=> null_statement
-|   (loop_statement )=> loop_statement 
-|   (procedure_call_statement )=> procedure_call_statement 
-|   (variable_assignment_statement)=> variable_assignment_statement 
+:   wait_statement 
+|   assertion_statement 
+|   report_statement 
+|   if_statement 
+|   case_statement 
+|   next_statement 
+|   exit_statement 
+|   return_statement 
+|   null_statement
+|   loop_statement 
+|   procedure_call_statement 
+|   variable_assignment_statement 
 |   signal_assignment_statement 
 ;
 
@@ -1241,7 +1130,7 @@ sign
 ;
 
 signal_assignment_statement
-:   (options{greedy=true;}: label_colon)? target 
+:   (label_colon)? target 
 		LSTEQ (delay_mechanism)? waveform SEMI
 ;
 
@@ -1266,7 +1155,7 @@ signature
 ;
 
 simple_expression
-:   (sign)? term (options{greedy=true;}: adding_operator term)*
+:   (sign)? term (adding_operator term)*
 ;
 
 simple_name
@@ -1288,7 +1177,7 @@ subprogram_declaration
 ;
 
 subprogram_declarative_item
-:   (subprogram_declaration)=> subprogram_declaration 
+:   subprogram_declaration 
 |   subprogram_body 
 |   type_declaration 
 |   subtype_declaration 
@@ -1296,10 +1185,10 @@ subprogram_declarative_item
 |   variable_declaration 
 |   file_declaration 
 |   alias_declaration 
-|   (attribute_specification)=> attribute_specification
+|   attribute_specification
 |   attribute_declaration
 |   use_clause 
-|   (K_GROUP identifier COLON)=> group_declaration
+|   group_declaration
 |   group_template_declaration
 ;
 
@@ -1343,7 +1232,7 @@ target
 ;
 
 term
-:   factor (options{greedy=true;}: multiplying_operator factor)*
+:   factor (multiplying_operator factor)*
 ;
 
 timeout_clause
@@ -1351,7 +1240,7 @@ timeout_clause
 ;
 
 type_declaration
-:   (full_type_declaration)=> full_type_declaration
+:   full_type_declaration
 |   incomplete_type_declaration
 ;
 
@@ -1373,7 +1262,7 @@ use_clause
 ;
 
 variable_assignment_statement
-:   (options{greedy=true;}: label_colon)? target COLONEQ expression SEMI
+:   (label_colon)? target COLONEQ expression SEMI
 ;
 
 variable_declaration
@@ -1447,16 +1336,116 @@ RCURLY:	'}'	;
 TILDE:	'~' ;
 COLONEQ:':=';
 
+
+K_ABS : 'abs' ;
+K_ACCESS : 'access' ;
+K_AFTER : 'after' ;
+K_ALIAS : 'alias' ;
+K_ALL : 'all' ;
+K_AND : 'and' ;
+K_ARCHITECTURE : 'architecture' ;
+K_ARRAY : 'array' ;
+K_ASSERT : 'assert' ;
+K_ATTRIBUTE : 'attribute' ;
+K_BEGIN : 'begin' ;
+K_BLOCK : 'block' ;
+K_BODY : 'body' ;
+K_BUFFER : 'buffer' ;
+K_BUS : 'bus' ;
+K_CASE : 'case' ;
+K_COMPONENT : 'component' ;
+K_CONFIGURATION  : 'configuration'  ;
+K_CONSTANT  : 'constant'  ;
+K_DISCONNECT : 'disconnect' ;
+K_DOWNTO : 'downto' ;
+K_ELSE : 'else' ;
+K_ELSIF : 'elsif' ;
+K_END : 'end' ;
+K_ENTITY : 'entity' ;
+K_EXIT : 'exit' ;
+K_FILE : 'file' ;
+K_FOR : 'for' ;
+K_FUNCTION : 'function' ;
+K_GENERATE : 'generate' ;
+K_GENERIC : 'generic' ;
+K_GROUP : 'group' ;
+K_GUARDED : 'guarded' ;
+K_IF : 'if' ;
+K_IMPURE : 'impure' ;
+K_IN : 'in' ;
+K_INERTIAL : 'inertial' ;
+K_INOUT : 'inout' ;
+K_IS : 'is' ;
+K_LABEL : 'label' ;
+K_LIBRARY : 'library' ;
+K_LINKAGE : 'linkage' ;
+K_LITERAL : 'literal' ;
+K_LOOP : 'loop' ;
+K_MAP : 'map' ;
+K_MOD  : 'mod'  ;
+K_NAND : 'nand' ;
+K_NEW  : 'new'  ;
+K_NEXT : 'next' ;
+K_NOR : 'nor' ;
+K_NOT : 'not' ;
+K_NULL : 'null' ;
+K_OF  : 'of'  ;
+K_ON : 'on' ;
+K_OPEN : 'open' ;
+K_OR : 'or' ;
+K_OTHERS  : 'others'  ;
+K_OUT : 'out' ;
+K_PACKAGE  : 'package'  ;
+K_PORT : 'port' ;
+K_POSTPONED : 'postponed' ;
+K_PROCEDURE  : 'procedure'  ;
+K_PROCESS : 'process' ;
+K_PROTECTED : 'protected' ;
+K_PURE : 'pure' ;
+K_RANGE : 'range' ;
+K_RECORD : 'record' ;
+K_REGISTER  : 'register'  ;
+K_REJECT : 'reject' ;
+K_REM : 'rem' ;
+K_REPORT : 'report' ;
+K_RETURN : 'return' ;
+K_ROL : 'rol' ;
+K_ROR : 'ror' ;
+K_SELECT : 'select' ;
+K_SEVERITY : 'severity' ;
+K_SHARED : 'shared' ;
+K_SIGNAL : 'signal' ;
+K_SLA : 'sla' ;
+K_SLL : 'sll' ;
+K_SRA : 'sra' ;
+K_SRL : 'srl' ;
+K_SUBTYPE : 'subtype' ;
+K_THEN : 'then' ;
+K_TO  : 'to'  ;
+K_TRANSPORT : 'transport' ;
+K_TYPE : 'type' ;
+K_UNAFFECTED : 'unaffected' ;
+K_UNITS  : 'units'  ;
+K_UNTIL : 'until' ;
+K_USE : 'use' ;
+K_VARIABLE : 'variable' ;
+K_WAIT : 'wait' ;
+K_WHEN : 'when' ;
+K_WHILE : 'while' ;
+K_WITH : 'with' ;
+K_XNOR : 'xnor' ;
+K_XOR : 'xor' ;
+
 WS
-:	(' '|'\r'|'\t')+	{$channel=HIDDEN;}
+:	(' '|'\r'|'\t')+ -> skip
 ;
 
 NEWLINE
-:	'\n' {$channel=HIDDEN;}
+:	'\n' -> channel(HIDDEN)
 ;
 
 COMMENT
-: '--' (~'\n')* 	{$channel=HIDDEN;}
+: '--' (~'\n')* -> channel(HIDDEN)
 ;
 
 BASIC_IDENTIFIER
@@ -1479,9 +1468,9 @@ TIC_SIMPLE_NAME
 ;
 
 CHARACTER_LITERAL
-:   ('\'' (GRAPHIC_CHARACTER)? '\'')=> '\'' (GRAPHIC_CHARACTER)? '\''
-|	(TIC_SIMPLE_NAME)=> TIC_SIMPLE_NAME {$type = TIC_SIMPLE_NAME;}
-|	TIC	{$type = TIC;}	
+:   '\'' (GRAPHIC_CHARACTER)? '\''
+|	TIC_SIMPLE_NAME
+|	TIC	
 ;
 
 EXTENDED_IDENTIFIER
@@ -1493,11 +1482,11 @@ STRING_LITERAL
 ;
 
 DECIMAL_LITERAL
-:   INTEGER ('.' INTEGER)? (EXPONENT)?  {$type = DECIMAL_LITERAL;}
+:   INTEGER ('.' INTEGER)? (EXPONENT)?
 ;
 
 BASED_LITERAL
-:   INTEGER '#' BASED_INTEGER ('.' BASED_INTEGER)? '#' (EXPONENT)?  {$type = BASED_LITERAL;}
+:   INTEGER '#' BASED_INTEGER ('.' BASED_INTEGER)? '#' (EXPONENT)?
 ;
 
 fragment

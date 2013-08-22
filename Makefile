@@ -3,13 +3,13 @@
 all : Main.class
 
 VhdlLexer.java VhdlParser.java : Vhdl.g
-	java -cp antlr-3.5-complete.jar org.antlr.Tool $<
+	java -cp antlr-4.1-complete.jar org.antlr.v4.Tool Vhdl.g
 
 Main.class : Main.java VhdlLexer.java VhdlParser.java ANTLRNoCaseFileStream.java
-	javac -cp .:antlr-3.5-complete.jar $<
+	javac -cp .:antlr-4.1-complete.jar $<
 
 clean :
-	rm -f *.class VhdlLexer.java VhdlParser.java
+	rm -f *.class VhdlLexer.java VhdlParser.java VhdlBaseListener.java VhdlListener.java
 
 run : all
-	java -cp .:antlr-3.5-complete.jar Main adder.vhdl
+	java -cp .:antlr-4.1-complete.jar Main adder.vhdl

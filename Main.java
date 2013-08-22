@@ -1,4 +1,4 @@
-import org.antlr.runtime.*;
+import org.antlr.v4.runtime.*;
 
 public class Main {
 
