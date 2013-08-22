@@ -1,0 +1,3 @@
+This is an antlr2 grammar for VHDL parsing.
+
+This version is copied from https://github.com/gburdell/parser which is derived from http://sourceforge.net/projects/v2kparse/.
